@@ -592,3 +592,44 @@ cpdef double cauchy(double x, double m, double gamma):
     """
     cdef double xmg = (x-m)/gamma
     return 1/(pi*gamma*(1+xmg*xmg))
+
+
+cdef class _Exponential:
+    """
+    Exponential.
+    """
+    cdef public object func_code
+    cdef public object func_defaults
+
+    def __init__(self, xname='x'):
+
+        varnames = [xname, "tau"]
+        self.func_code = MinimalFuncCode(varnames)
+        self.func_defaults = None
+
+    def __call__(self, *arg):
+
+        cdef double x = arg[0]
+        cdef double tau = arg[1]
+
+        ret = exp(x * tau)
+
+        return ret
+
+    def integrate(self, tuple bound, int nint_subdiv, *arg):
+
+        cdef double a, b
+        a, b = bound
+
+        cdef double tau = arg[0]
+        cdef double ret = 0
+
+        if tau < smallestdiv:
+            ret = exp(b * tau) - exp(a * tau)
+            ret /= tau
+        else:
+            ret = badvalue
+
+        return ret
+
+exponential = _Exponential()
