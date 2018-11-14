@@ -611,8 +611,23 @@ cdef class _Exponential:
 
         cdef double x = arg[0]
         cdef double tau = arg[1]
+        cdef double ret = 0
 
-        ret = exp(x * tau)
+        if x >= 0:
+            ret = tau * exp(x * -tau)
+        else:
+            ret = 0.
+
+        return ret
+
+    def cdf(self, x, tau):
+
+        cdef double ret = 0
+
+        if x >= 0:
+            ret = 1. - exp(x * -tau)
+        else:
+            ret = 0.
 
         return ret
 
@@ -622,14 +637,10 @@ cdef class _Exponential:
         a, b = bound
 
         cdef double tau = arg[0]
-        cdef double ret = 0
 
-        if tau < smallestdiv:
-            ret = exp(b * tau) - exp(a * tau)
-            ret /= tau
-        else:
-            ret = badvalue
+        Fa = self.cdf(a, tau)
+        Fb = self.cdf(b, tau)
 
-        return ret
+        return Fb - Fa
 
 exponential = _Exponential()
