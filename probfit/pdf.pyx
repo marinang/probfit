@@ -177,7 +177,7 @@ cdef class _JohnsonSU:
 
         cdef double ret = 0.
 
-        ret = 0.5 * (erf(zmax / (sqrt(2))) - erf(zmin / (sqrt(2))))
+        ret = 0.5 * (erf(rmax / (sqrt(2))) - erf(rmin / (sqrt(2))))
 
         return ret
 
